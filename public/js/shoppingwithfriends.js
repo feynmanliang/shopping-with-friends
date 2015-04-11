@@ -27,13 +27,17 @@ var ShopForm = React.createClass({
     var TITLE = '';
     if (currData.length > 0) {
       TITLE = currData.name;
-      for (var i = 0; i < currData.items.length; i++) {
-        LIST.push(<tr>
-                  <td>{currData.items[i].owner}</td>
-                  <td>{currData.items[i].item}</td>
-                  <td><input type="text" ref="pricefield" placeholder="enter price"/></td>
-                  <td><button onClick={this._handleDelete} id={currData[0].items._id}>destroy</button></td>
-                  </tr>);
+      if (typeof currData.items !== 'undefined' ) {
+        console.log('currData.items');
+        console.log(currData.items);
+        for (var i = 0; i < currData.items.length; i++) {
+          LIST.push(<tr>
+                    <td>{currData.items[i].owner}</td>
+                    <td>{currData.items[i].item}</td>
+                    <td><input type="text" ref="pricefield" placeholder="enter price"/></td>
+                    <td><button onClick={this._handleDelete} id={currData[0].items._id}>destroy</button></td>
+                    </tr>);
+        }
       }
     }
     return (
@@ -56,12 +60,12 @@ var ShopForm = React.createClass({
   },
   _makeList: function(e) {
     e.preventDefault();
-    var title = this.refs.titlefield.getDOMNode().value().trim();
+    var title = this.refs.titlefield.getDOMNode().value.trim();
     $.ajax({
-      url:'/lists/add',
+      url:'/shop/lists/create',
       dataType: 'json',
       type: 'POST',
-      data: {'listname': title},
+      data: {'listName': title},
       success: function(data) {
         this.setState({ ListData: data });
       }.bind(this),
