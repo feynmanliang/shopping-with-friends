@@ -13,6 +13,15 @@ var ShopForm = React.createClass({
       this.setState({ListData: []});
   },
   render: function() {
+    if (this.state.ListData.length === 0) {
+      return (
+        <div>
+          <input type="text" ref="titlefield" placeholder="title.."/>
+          <button onClick={this._makeList}>submit</button>
+        </div>
+      );
+    }
+    else {
     var currData = this.state.ListData;
     var LIST = [];
     var TITLE = '';
@@ -26,15 +35,13 @@ var ShopForm = React.createClass({
                   <td><button onClick={this._handleDelete} id={currData[0].items._id}>destroy</button></td>
                   </tr>);
       }
-    } else {
-      $('#titleinput').append(<input type="text" ref="titlefield" onClickOut={this._submitTitle} placeholder="title.."/>)
-
     }
     return (
       <div>
-      <div id='titleinput'/>
-      <input type="text" ref="namefield" placeholder="name.."/>
-      <textarea ref="itemfield" placeholer="write something.."/>
+        <input type="text" ref="namefield" placeholder="name.."/>
+        <textarea ref="itemfield" rows="5" cols="30" placeholer="enter items separated by commas.."/>
+        <button onClick={this._handleSubmit}>submit</button>
+        <button onClick={this._showTitles}>show lists</button>
       <table>
         <thead>
           <h1>{TITLE}</h1>
@@ -45,6 +52,29 @@ var ShopForm = React.createClass({
       </table>
       </div>
     );
+    }
+  },
+  _makeList: function(e) {
+    e.preventDefault();
+    var title = this.refs.titlefield.getDOMNode().value().trim();
+    $.ajax({
+      url:'/lists/add',
+      dataType: 'json',
+      type: 'POST',
+      data: {'listname': title},
+      success: function(data) {
+        this.setState({ ListData: data });
+      }.bind(this),
+      error: function(xhr, status, err) {
+        console.error(this.props.url, status, err.toString());
+      }.bind(this)
+    });
+
+
+  },
+  _showTitles: function(event) {
+    event.preventDefault();
+    //TODO: send GET to gather list names
   },
   _handleDelete: function(event) {
     event.preventDefault();
@@ -60,14 +90,17 @@ var ShopForm = React.createClass({
       }.bind(this)
     });
   },
-  _submitTitle: function(event) {
+  _handleSubmit: function(event) {
     event.preventDefault();
     var title = this.refs.titlefield.getDOMNode.value.trim();
+    var owner = this.refs.namefield.getDOMNode.value.trim();
+    var item = this.refs.itemfield.getDOMNode.value.trim();
     this.refs.titlefield.getDOMNode.value = '';
+    this.refs.namefield.getDOMNode.value = '';
+    this.refs.itemfield.getDOMNode.value = '';
 
-    //TODO: POST title for new shop list/ create new list object -> {'name': title}
     $.ajax({
-      url:'',
+      url:'/lists/add',
       dataType: 'json',
       type: 'POST',
       data: {'name': title},
