@@ -2,27 +2,37 @@
 "use strict";
 
 var ShopForm = React.createClass({
-  currTitle: function() {
-    return '';
-  },
   getInitialState: function() {
     return { };
   },
   componentDidMount: function() {
-    var title = document.getElementById("titleid").firstChild.innerHTML;
-    $.getJSON('/shop/lists/'+title, function(data) {
-    this.setState({ListData: data});
-    }.bind(this));
-      //this.setState({ListData: []});
+    this.setState( { ListData: {} } );
   },
   render: function() {
+    $.getJSON('/shop/lists', function(titlesArr) {
+      console.log('titlesarr');
+      console.log(titlesArr);
+      var titlesList = titlesArr;
+
+    var TITLE_LIST = [];
     if (!this.state.name) {
+      console.log('this.state');
+      console.log(this.props.Titles);
+      for (var i = 0; i < titlesList.length; i++) {
+        TITLE_LIST.push(<li><a href="#!">{titlesList[i]}</a></li>);
+        }
       return (
         <div>
           <input type="text" ref="titlefield" placeholder="title.."/>
           <button onClick={this._makeList}>submit</button>
+          <a className="dropdown-button btn" href="#" data-activates="dropdown1">pick a list to add to</a>
+          <ul id="dropdown1" className="dropdown-content">
+          {TITLE_LIST}
+          </ul>
         </div>
-      );
+      )
+    };
+    });
     }
     else {
       var LIST = [];
@@ -60,6 +70,8 @@ var ShopForm = React.createClass({
   _makeList: function(e) {
     e.preventDefault();
     var title = this.refs.titlefield.getDOMNode().value.trim();
+    console.log('title in makelist');
+    console.log(title);
     this.refs.titlefield.getDOMNode().value = '';
     $.ajax({
       url:'/shop/lists/create',
@@ -70,7 +82,7 @@ var ShopForm = React.createClass({
         console.log('data');
         console.log(data);
 
-        this.setState(data[0]);
+        this.setState( { ListData: data[0] } );
       }.bind(this),
       error: function(xhr, status, err) {
         console.error(this.props.url, status, err.toString());
@@ -94,6 +106,9 @@ var ShopForm = React.createClass({
   _handleSubmit: function(event) {
     event.preventDefault();
     var title = document.getElementById("titleid").firstChild.innerHTML;
+    console.log('title in handlesubmit');
+    console.log(title);
+
     var owner = this.refs.namefield.getDOMNode().value.trim();
     var item = this.refs.itemfield.getDOMNode().value.trim();
     this.refs.namefield.getDOMNode.value = '';
@@ -107,6 +122,8 @@ var ShopForm = React.createClass({
       type: 'POST',
       data: {'listName': title, 'items': [{ _id: y, 'ownerPhone#': owner, 'itemName': item }]},
       success: function(data) {
+        console.log('handle submit SUCESS');
+        this.setState({ ListData: data });
       }.bind(this),
       error: function(xhr, status, err) {
         console.error(this.props.url, status, err.toString());
