@@ -9,10 +9,10 @@ var ShopForm = React.createClass({
     return { };
   },
   componentDidMount: function() {
-//    //TODO: send proper GET to backend
-//    $.getJSON('/shop/lists/'+title, function(data) {
-//    this.setState({ListData: data});
-//    }.bind(this));
+    var title = document.getElementById("titleid").firstChild.innerHTML;
+    $.getJSON('/shop/lists/'+title, function(data) {
+    this.setState({ListData: data});
+    }.bind(this));
       //this.setState({ListData: []});
   },
   render: function() {
@@ -43,11 +43,10 @@ var ShopForm = React.createClass({
           <input type="text" ref="namefield" placeholder="name.." />
           <textarea ref="itemfield" rows="5" cols="30" placeholer="enter items separated by commas.." />
           <button onClick={this._handleSubmit}>submit</button>
-          <button onClick={this._showTitles}>show lists</button>
           <table>
             <thead>
               <tr>
-                <th><h1>{this.state.name}</h1></th>
+                <th id="titleid"><h1>{this.state.name}</h1></th>
               </tr>
             </thead>
             <tbody>
@@ -61,6 +60,7 @@ var ShopForm = React.createClass({
   _makeList: function(e) {
     e.preventDefault();
     var title = this.refs.titlefield.getDOMNode().value.trim();
+    this.refs.titlefield.getDOMNode().value = '';
     $.ajax({
       url:'/shop/lists/create',
       dataType: 'json',
@@ -93,18 +93,19 @@ var ShopForm = React.createClass({
   },
   _handleSubmit: function(event) {
     event.preventDefault();
-    var title = this.refs.titlefield.getDOMNode.value.trim();
-    var owner = this.refs.namefield.getDOMNode.value.trim();
-    var item = this.refs.itemfield.getDOMNode.value.trim();
-    this.refs.titlefield.getDOMNode.value = '';
+    var title = document.getElementById("titleid").firstChild.innerHTML;
+    var owner = this.refs.namefield.getDOMNode().value.trim();
+    var item = this.refs.itemfield.getDOMNode().value.trim();
     this.refs.namefield.getDOMNode.value = '';
     this.refs.itemfield.getDOMNode.value = '';
+    var x = new Date();
+    var y = x.getTime();
 
     $.ajax({
-      url:'/lists/add',
+      url:'/shop/lists/'+title+'/additems',
       dataType: 'json',
       type: 'POST',
-      data: {'name': title},
+      data: {'listName': title, 'items': [{ _id: y, 'ownerPhone#': owner, 'itemName': item }]},
       success: function(data) {
       }.bind(this),
       error: function(xhr, status, err) {
