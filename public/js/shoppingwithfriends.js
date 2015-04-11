@@ -11,7 +11,28 @@ var ShopForm = React.createClass({
   },
   render: function() {
     return (
+      <div>
+      <input type="text" ref="titlefield" onClickOut={this._submitTitle} placeholder="title.."/>
+      <input type="text" ref="namefield" placeholder="name.."/>
+      <textarea ref="itemfield" placeholer="write something.."/>
+      </div>
     );
+  },
+  _submitTitle: function(event) {
+    event.preventDefault();
+    var title = this.refs.titlefield.getDOMNode.value.trim();
+    //TODO: POST title for new shop list/ create new list object -> {'name': title}
+    $.ajax({
+      url:'',
+      dataType: 'json',
+      type: 'POST',
+      data: {'name': title},
+      success: function(data) {
+      }.bind(this),
+      error: function(xhr, status, err) {
+        console.error(this.props.url, status, err.toString());
+      }.bind(this)
+    });
   }
 });
 
