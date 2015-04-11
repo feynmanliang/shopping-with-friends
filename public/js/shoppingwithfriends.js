@@ -3,7 +3,7 @@
 
 var ShopForm = React.createClass({
   getInitialState: function() {
-    this.setState({ListData: []});
+    return { ListData: [] };
   },
   componentDidMount: function() {
     //TODO: send proper GET to backend
@@ -16,12 +16,12 @@ var ShopForm = React.createClass({
     var currData = this.state.ListData;
     var LIST = [];
     var TITLE = '';
-    if (currData[0].length > 0) {
-      TITLE = currData[0].name;
-      for (var i = 0; i < currData[0].items.length; i++) {
+    if (currData.length > 0) {
+      TITLE = currData.name;
+      for (var i = 0; i < currData.items.length; i++) {
         LIST.push(<tr>
-                  <td>{currData[0].items[i].owner}</td>
-                  <td>{currData[0].items[i].item}</td>
+                  <td>{currData.items[i].owner}</td>
+                  <td>{currData.items[i].item}</td>
                   <td><input type="text" ref="pricefield" placeholder="enter price"/></td>
                   <td><button onClick={this._handleDelete} id={currData[0].items._id}>destroy</button></td>
                   </tr>);
@@ -83,5 +83,5 @@ var ShopForm = React.createClass({
 $(document).ready(function() {
   React.render(
     <ShopForm/>,
-    $.'#content')[0]);
+    $('#content')[0]);
 });
