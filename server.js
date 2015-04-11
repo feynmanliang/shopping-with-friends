@@ -1,4 +1,5 @@
 var server = require('nodebootstrap-server');
+require('dotenv').load();
 
 server.setup(function(runningApp) {
 
@@ -7,7 +8,7 @@ server.setup(function(runningApp) {
   //---- Mounting well-encapsulated application modules
   //---- See: http://vimeo.com/56166857
 
-  runningApp.use('/hello', require('hello')); // attach to sub-route
+  runningApp.use('/sms', require('sms')); // attach to sub-route
   runningApp.use('/shop', require('shop')); // attach to sub-route
   runningApp.use(require('routes')); // attach to root route
 
