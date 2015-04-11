@@ -7,9 +7,10 @@ var ShopForm = React.createClass({
   },
   componentDidMount: function() {
     //TODO: send proper GET to backend
-    $.getJSON('', function(data) {
-    this.setState({ListData: data});
-    }.bind(this));
+//    $.getJSON('', function(data) {
+//    this.setState({ListData: data});
+ //   }.bind(this));
+      this.setState({ListData: []});
   },
   render: function() {
     var currData = this.state.ListData;
@@ -58,7 +59,6 @@ var ShopForm = React.createClass({
         console.error(this.props.url, status. err.toString());
       }.bind(this)
     });
-   }
   },
   _submitTitle: function(event) {
     event.preventDefault();
