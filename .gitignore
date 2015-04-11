@@ -10,3 +10,5 @@ logs
 public/bower_components
 config/runtime.json
 config/local.*
+.env
+*.swp
