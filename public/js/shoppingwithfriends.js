@@ -2,18 +2,21 @@
 "use strict";
 
 var ShopForm = React.createClass({
+  currTitle: function() {
+    return '';
+  },
   getInitialState: function() {
-    return { ListData: [] };
+    return { };
   },
   componentDidMount: function() {
-    //TODO: send proper GET to backend
-//    $.getJSON('', function(data) {
+//    //TODO: send proper GET to backend
+//    $.getJSON('/shop/lists/'+title, function(data) {
 //    this.setState({ListData: data});
- //   }.bind(this));
-      this.setState({ListData: []});
+//    }.bind(this));
+      //this.setState({ListData: []});
   },
   render: function() {
-    if (this.state.ListData.length === 0) {
+    if (!this.state.name) {
       return (
         <div>
           <input type="text" ref="titlefield" placeholder="title.."/>
@@ -22,40 +25,37 @@ var ShopForm = React.createClass({
       );
     }
     else {
-    var currData = this.state.ListData;
-    var LIST = [];
-    var TITLE = '';
-    if (currData.length > 0) {
-      TITLE = currData.name;
-      if (typeof currData.items !== 'undefined' ) {
+      var LIST = [];
+      if (typeof this.state.items !== 'undefined') {
         console.log('currData.items');
-        console.log(currData.items);
-        for (var i = 0; i < currData.items.length; i++) {
+        console.log(this.state.items);
+        for (var i = 0; i < this.state.items.length; i++) {
           LIST.push(<tr>
-                    <td>{currData.items[i].owner}</td>
-                    <td>{currData.items[i].item}</td>
+                    <td>{this.state.items[i].owner}</td>
+                    <td>{this.state.items[i].item}</td>
                     <td><input type="text" ref="pricefield" placeholder="enter price"/></td>
-                    <td><button onClick={this._handleDelete} id={currData[0].items._id}>destroy</button></td>
+                    <td><button onClick={this._handleDelete} id={this.state.items[i]._id}>destroy</button></td>
                     </tr>);
         }
       }
-    }
-    return (
-      <div>
-        <input type="text" ref="namefield" placeholder="name.."/>
-        <textarea ref="itemfield" rows="5" cols="30" placeholer="enter items separated by commas.."/>
-        <button onClick={this._handleSubmit}>submit</button>
-        <button onClick={this._showTitles}>show lists</button>
-      <table>
-        <thead>
-          <h1>{TITLE}</h1>
-        </thead>
-        <tbody>
-          {LIST}
-        </tbody>
-      </table>
-      </div>
-    );
+      return (
+        <div>
+          <input type="text" ref="namefield" placeholder="name.." />
+          <textarea ref="itemfield" rows="5" cols="30" placeholer="enter items separated by commas.." />
+          <button onClick={this._handleSubmit}>submit</button>
+          <button onClick={this._showTitles}>show lists</button>
+          <table>
+            <thead>
+              <tr>
+                <th><h1>{this.state.name}</h1></th>
+              </tr>
+            </thead>
+            <tbody>
+              {LIST}
+            </tbody>
+          </table>
+        </div>
+      );
     }
   },
   _makeList: function(e) {
@@ -67,18 +67,15 @@ var ShopForm = React.createClass({
       type: 'POST',
       data: {'listName': title},
       success: function(data) {
-        this.setState({ ListData: data });
+        console.log('data');
+        console.log(data);
+
+        this.setState(data[0]);
       }.bind(this),
       error: function(xhr, status, err) {
         console.error(this.props.url, status, err.toString());
       }.bind(this)
     });
-
-
-  },
-  _showTitles: function(event) {
-    event.preventDefault();
-    //TODO: send GET to gather list names
   },
   _handleDelete: function(event) {
     event.preventDefault();
@@ -119,6 +116,6 @@ var ShopForm = React.createClass({
 
 $(document).ready(function() {
   React.render(
-    <ShopForm/>,
+    <ShopForm />,
     $('#content')[0]);
 });
