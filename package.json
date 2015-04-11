@@ -18,10 +18,12 @@
   "dependencies": {
     "config": "*",
     "express": "^4.11.0",
+    "getenv": "^0.5.0",
     "metalogger": "*",
     "mongodb": "^1.4.35",
     "mongoskin": "^1.4.13",
     "nodebootstrap-server": "*",
+    "twilio": "^1.11.1",
     "underscore": "^1.7.0",
     "yaml": "*"
   },
