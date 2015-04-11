@@ -1,29 +1,44 @@
 {
-  "name": "react-app-boilerplate",
-  "version": "2.2.2",
-  "description": "React application boilerplate",
-  "author": "Christian Alfoni",
-  "license": "ISC",
-  "devDependencies": {
-    "browserify": "^6.2.0",
-    "glob": "^4.0.6",
-    "gulp": "^3.8.9",
-    "gulp-concat": "^2.3.4",
-    "gulp-cssmin": "^0.1.6",
-    "gulp-if": "^1.2.4",
-    "gulp-livereload": "^2.1.1",
-    "gulp-notify": "^1.4.2",
-    "gulp-streamify": "0.0.5",
-    "gulp-uglify": "^0.3.1",
-    "gulp-util": "^3.0.0",
-    "gulp-jasmine2-phantomjs": "^0.1.1",
-    "gulp-shell": "^0.2.10",
-    "phantomjs": "^1.9.12",
-    "reactify": "^0.15.2",
-    "vinyl-source-stream": "^0.1.1",
-    "watchify": "^2.1.1"
-  },
-  "dependencies": {
-    "react": "^0.13.1"
+    "name" : "nodebootstrap-based-app"
+  , "private": true
+  , "description" : ""
+  , "author"      : ""
+  , "license" : {
+      "type" : "MIT"
+    , "url"  : ""
   }
+  , "main"        : "./server.js"
+  , "repository"  : {
+      "type" : "git",
+      "url"  : ""
+  }
+  , "engines": {
+      "node": ">=0.8.8"
+  }
+  , "dependencies": {
+      "yaml"                     : "*"
+    , "express"                  : "^4.11.0"
+    , "nodebootstrap-server"     : "*"
+    , "config"                   : "*"
+    , "underscore"               : "^1.7.0"
+    , "metalogger"               : "*"
+  }
+  , "devDependencies" : {
+      "after": "^0.8.1"
+    , "istanbul": "^0.3.2"
+    , "mocha": "^2.1.0"
+    , "chai": "^1.9.1"
+    , "should": "^4.4.4"
+    , "jshint": "^2.5.x"
+    , "commander" : "^2.6.0"
+    , "glob" : "^4.3.2"
+  }
+  , "scripts": {
+      "prepublish": "npm prune"
+    , "test": "mocha --require test/support/env --reporter spec --bail --check-leaks test/ test/acceptance/"
+    , "pretest": "jshint lib test"
+    , "test-cov": "istanbul cover node_modules/mocha/bin/_mocha -- --require test/support/env --reporter dot --check-leaks test/ test/acceptance/"
+    , "test-travis": "istanbul cover node_modules/mocha/bin/_mocha --report lcovonly -- --require test/support/env --reporter spec --check-leaks test/ test/acceptance/"
+  }  
+  
 }
