@@ -1,7 +1,6 @@
 /** @jsx React.DOM */
 
 var React = require('react');
-var Materialize = require('materialize');
 var io = require('../public/bower_components/socket.io-client/socket.io.js');
 var _ = require('underscore');
 
@@ -63,53 +62,44 @@ module.exports = React.createClass({
                       <input type="text" id={"priceForItem" + item._id} value={item.price} onChange={this._handlePricefieldChange} />
                       </td>
                       <td>
-                      <button onClick={this._handleUpdatePrice} id={item._id} className="btn btn-success btn-xs">
+                      <button onClick={this._handleUpdatePrice} id={item._id} className="btn waves-effect waves-light green">
                       $
                       </button>
                       </td>
-                      <td><button onClick={this._handleDelete} id={item._id} className="btn btn-danger btn-xs">destroy</button></td>
+                      <td><button onClick={this._handleDelete} id={item._id} className="btn waves-effect waves-light red">destroy</button></td>
                       </tr>);
       }.bind(this));
 
       var venmoButton;
       var userInfo;
       if (getParameterByName('access_token') === '') {
-        venmoButton = <button className="btn btn-success" onClick={this._authWithVenmo}>Authenticate with Venmo</button>;
+        venmoButton = <button className="btn waves-effect waves-light left" onClick={this._authWithVenmo}>Authenticate with Venmo</button>;
       } else {
-        venmoButton = <button className="btn btn-success" onClick={this._chargeVenmo}>Split Bill</button>;
+        venmoButton = (<button className="btn waves-effect waves-light left" onClick={this._chargeVenmo}>
+                       Split Bill
+                       <i class="mdi-content-send right"></i>
+                       </button>);
       }
       return (
         <div>
-          <a className="btn" onclick="Materialize.toast('I am a toast', 4000)">Toast!</a>
-
-          <a className="modal-trigger waves-effect waves-light btn" href="#modal1">Modal</a>
-          <div id="modal1" className="modal modal-fixed-footer">
-            <div className="modal-content">
-              <h4>Success</h4>
-              <p>You successfullly texted your friends!</p>
-            </div>
-            <div className="modal-footer">
-              <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat ">Agree</a>
-            </div>
-          </div>
-          <div id='chargesuccess'>
-            <h1>{this.props.listName}</h1>
-            <table className="table">
-              <tr>
-                <th>Status</th>
-                <th>Phone Number</th>
-                <th>Item Name</th>
-                <th>Price</th>
-                <th></th>
-                <th>Delete</th>
-              </tr>
+          <h1>{this.props.listName}</h1>
+          <table className="table">
+            <tr>
+              <th>Status</th>
+              <th>Phone</th>
+              <th>Item</th>
+              <th>Price</th>
+              <th></th>
+              <th>Delete</th>
+            </tr>
             <tbody>
               {showList}
             </tbody>
-            </table>
-            <br />
+          </table>
+          <div className="section">
             {venmoButton}
-            <button className="btn" onClick={this._deleteList}>Delete List</button>
+            <button className="btn waves-effect waves-light red right" onClick={this._deleteList}>Delete List</button>
+            <br /><br />
           </div>
         </div>
       );
