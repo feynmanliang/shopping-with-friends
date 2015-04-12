@@ -27,6 +27,7 @@ var App = React.createClass({
     } else {
       return (
       <div className="section">
+        <h1>this.state.listName</h1>
         <ShoppingList listName={this.state.listName} />
       </div>
       );

@@ -28,6 +28,7 @@ var App = React.createClass({displayName: "App",
     } else {
       return (
       React.createElement("div", {className: "section"}, 
+        React.createElement("h1", null, "this.state.listName"), 
         React.createElement(ShoppingList, {listName: this.state.listName})
       )
       );
