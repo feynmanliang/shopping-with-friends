@@ -120,11 +120,17 @@ module.exports = React.createClass({displayName: "exports",
       showList.push(React.createElement("tr", null, 
                     React.createElement("td", null, item.ownerPhone), 
                     React.createElement("td", null, item.itemName), 
-                    React.createElement("td", null, React.createElement("input", {type: "text", ref: "pricefield"})), 
-                    React.createElement("td", null, React.createElement("button", {onClick: this._submitPrice, id: item._id, className: "btn btn-success btn-xs"}, "$")), 
+                    React.createElement("td", null, 
+                      React.createElement("input", {type: "text", ref: "pricefield"})
+                    ), 
+                    React.createElement("td", null, 
+                      React.createElement("button", {onClick: this._submitPrice, id: item._id, className: "btn btn-success btn-xs"}, 
+                        "$"
+                      )
+                    ), 
                     React.createElement("td", null, React.createElement("button", {onClick: this._handleDelete, id: item._id, className: "btn btn-danger btn-xs"}, "destroy"))
                     ));
-    });
+    }.bind(this));
 
     //var authButton;
     //var userInfo;
@@ -145,8 +151,14 @@ module.exports = React.createClass({displayName: "exports",
     //}
     return (
       React.createElement("div", null, 
-        React.createElement("button", {className: "btn btn-warning", onClick: this._sendSms}, "sms"), 
         React.createElement("table", {className: "table"}, 
+          React.createElement("tr", null, 
+            React.createElement("th", null, "Phone Number"), 
+            React.createElement("th", null, "Item Name"), 
+            React.createElement("th", null, "Price"), 
+            React.createElement("th", null), 
+            React.createElement("th", null, "Delete")
+          ), 
           React.createElement("tbody", null, 
             showList
           )
@@ -157,11 +169,12 @@ module.exports = React.createClass({displayName: "exports",
   _handleDelete: function(event) {
     event.preventDefault();
     var itemID = $(event.target).attr('id');
+    var listName = this.props.listName;
     $.ajax({
       type: 'DELETE',
-      url: ''+ itemID,
+      url: '/shop/lists/' + listName + '/' + itemID,
       success: function(data) {
-        this.setState({ListData: data});
+        this.setState({ items: data.items });
       }.bind(this),
       error: function(xhr, status, err) {
         console.error(this.props.url, status. err.toString());

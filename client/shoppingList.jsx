@@ -25,11 +25,17 @@ module.exports = React.createClass({
       showList.push(<tr>
                     <td>{item.ownerPhone}</td>
                     <td>{item.itemName}</td>
-                    <td><input type="text" ref="pricefield"/></td>
-                    <td><button onClick={this._submitPrice} id={item._id} className="btn btn-success btn-xs">$</button></td>
+                    <td>
+                      <input type="text" ref="pricefield" />
+                    </td>
+                    <td>
+                      <button onClick={this._submitPrice} id={item._id} className="btn btn-success btn-xs">
+                        $
+                      </button>
+                    </td>
                     <td><button onClick={this._handleDelete} id={item._id} className="btn btn-danger btn-xs">destroy</button></td>
                     </tr>);
-    });
+    }.bind(this));
 
     //var authButton;
     //var userInfo;
@@ -50,8 +56,14 @@ module.exports = React.createClass({
     //}
     return (
       <div>
-        <button className="btn btn-warning" onClick={this._sendSms}>sms</button>
         <table className="table">
+          <tr>
+            <th>Phone Number</th>
+            <th>Item Name</th>
+            <th>Price</th>
+            <th></th>
+            <th>Delete</th>
+          </tr>
           <tbody>
             {showList}
           </tbody>
@@ -62,11 +74,12 @@ module.exports = React.createClass({
   _handleDelete: function(event) {
     event.preventDefault();
     var itemID = $(event.target).attr('id');
+    var listName = this.props.listName;
     $.ajax({
       type: 'DELETE',
-      url: ''+ itemID,
+      url: '/shop/lists/' + listName + '/' + itemID,
       success: function(data) {
-        this.setState({ListData: data});
+        this.setState({ items: data.items });
       }.bind(this),
       error: function(xhr, status, err) {
         console.error(this.props.url, status. err.toString());
