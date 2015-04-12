@@ -54,7 +54,7 @@ module.exports = React.createClass({
     }
     return (
       <div>
-        <h1>this.props.listName</h1>
+        <h1>{this.props.listName}</h1>
         <table className="table">
           <tr>
             <th>Phone Number</th>
