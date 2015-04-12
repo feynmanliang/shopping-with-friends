@@ -67,59 +67,53 @@ module.exports = React.createClass({
     }.bind(this));
   },
   render: function() {
-    if (this.state.items.length === 0) {
-      $('#modal1').openModal();
-    }
-      var showList = [];
-      _.each(this.state.items, function(item) {
-        showList.push(<tr>
+    var showList = [];
+    _.each(this.state.items, function(item) {
+      showList.push(<tr>
                       <td>{item.ownerPhone}</td>
                       <td>{item.itemName}</td>
                       <td>
-                      <input type="text" id={"priceForItem" + item._id} value={item.price} onChange={this._handlePricefieldChange} />
+                        <input type="text" id={"priceForItem" + item._id} value={item.price} onChange={this._handlePricefieldChange} />
                       </td>
                       <td>
-                      <button onClick={this._handleUpdatePrice} id={item._id} className="btn waves-effect waves-light green">
-                      $
-                      </button>
+                        <button onClick={this._handleUpdatePrice} id={item._id} className="btn waves-effect waves-light green">
+                          $
+                        </button>
                       </td>
                       <td><button onClick={this._handleDelete} id={item._id} className="btn waves-effect waves-light red">destroy</button></td>
-                      </tr>);
-      }.bind(this));
+                    </tr>);
+    }.bind(this));
 
-      var venmoButton;
-      var userInfo;
-      if (getParameterByName('access_token') === '') {
-        venmoButton = <button className="btn waves-effect waves-light left" onClick={this._authWithVenmo}>Authenticate with Venmo</button>;
-      } else {
-        venmoButton = (<button className="btn waves-effect waves-light left" onClick={this._chargeVenmo}>
-                       Split Bill
-                       <i class="mdi-content-send right"></i>
-                       </button>);
-      }
-      return (
+    var venmoButton;
+    var userInfo;
+    if (getParameterByName('access_token') === '') {
+      venmoButton = <button className="btn waves-effect waves-light left" onClick={this._authWithVenmo}>Authenticate with Venmo</button>;
+    } else {
+      venmoButton = (<button className="btn waves-effect waves-light left" onClick={this._chargeVenmo}>
+                     Split Bill
+                     <i className="mdi-content-send right"></i>
+                     </button>);
+    }
+    return (
           <div>
-            <a className="modal-trigger waves-effect waves-light btn" style={{display:"None"}} href="#modal1">Modal</a>
-            <div id="modal1" className="modal modal-fixed-footer">
-              <div className="modal-content teal lighten-2">
-                <h4 font-size="100px;" >Success!</h4>
-                <div className="div_hover">
-                  <p>You texted your friends. Now to wait for a response....</p>
-                </div>
+            <section id="hero">
+              <div className="container">
+                <p>Your shopping trip to:</p>
+                <h1>{this.props.listName}</h1>
+                <hr className="slideRight" />
+                <p style={{display: "block"}}>Let's split the bill...</p>
               </div>
-              <div className="modal-footer">
-                <a href="#!" className="modal-action modal-close waves-effect waves-green btn-flat "/>
-              </div>
-            </div>
-            <h1>{this.props.listName}</h1>
-            <table className="table">
-              <tr>
-                <th>Phone Number</th>
-                <th>Item Name</th>
-                <th>Price</th>
-                <th></th>
-                <th>Delete</th>
-              </tr>
+            </section>
+            <table className="table hoverable centered">
+              <thead>
+                <tr>
+                  <th>Phone Number</th>
+                  <th>Item Name</th>
+                  <th>Price</th>
+                  <th></th>
+                  <th>Delete</th>
+                </tr>
+              </thead>
               <tbody>
                 {showList}
               </tbody>
@@ -130,10 +124,10 @@ module.exports = React.createClass({
             <button className="btn waves-effect waves-light red right" onClick={this._deleteList}>Delete List</button>
             <br /><br />
           </div>
-      );
+        </div>
+    );
   },
   _handlePricefieldChange: function(event) {
-    var itemId = event.target.id.slice(12);
     this.setState({ items: _.map(
       this.state.items,
       function(item) {
@@ -149,6 +143,7 @@ module.exports = React.createClass({
   _handleUpdatePrice: function(event) {
     event.preventDefault();
     var itemId = $(event.target).attr('id');
+
     var newPrice = $("#priceForItem" + itemId)[0].value.trim();
     $.ajax({
       type: 'POST',
@@ -157,9 +152,9 @@ module.exports = React.createClass({
         _id: itemId,
         newPrice: newPrice
       },
-      success: function() {
-        // TODO: flash the UI to confirm success
-      }.bind(this)
+      success: function(data) {
+        Materialize.toast('Price Updated', 1000, 'rounded');
+      }
     });
   },
   _handleDelete: function(event) {
@@ -169,6 +164,7 @@ module.exports = React.createClass({
       type: 'DELETE',
       url: '/shop/lists/' + this.props.listName + '/' + itemID,
       success: function(data) {
+        Materialize.toast('Item Deleted', 1000, 'rounded');
         this.setState({ items: data.items });
       }.bind(this)
     });

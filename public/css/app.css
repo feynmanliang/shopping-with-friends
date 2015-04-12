@@ -14,11 +14,52 @@ h4 {
   font-family: Calibri;
 }
 
-p {
-  font-size: 30px;
-  font-family: Calibri;
-}
-
 .modal {
     background-color:#fce4ec;
  }
+
+#hero {
+    height: 10cm;
+    background-image: url(../images/top.jpg);
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat
+}
+
+#hero .container {
+    padding-top: 40px
+}
+
+#hero h1,#hero p {
+    text-align: center
+}
+
+#hero p:first-child {
+    font-family: Calibri;
+    font-size: 2em;
+    color: grey darken-2;
+}
+
+#hero h1 {
+    font-family: Calibri;
+    font-size: 4.9em;
+    color: grey darken-2;
+}
+
+#hero p:last-child {
+    font-family: Calibri;
+    font-size: 1.5em;
+    color: grey darken-2;
+    display: none
+}
+
+#hero hr {
+    border: 1px solid #0a9
+}
+
+#hero .btn-floating {
+    position: relative;
+    margin: 0 auto;
+    display: block;
+    top: 115px
+}
