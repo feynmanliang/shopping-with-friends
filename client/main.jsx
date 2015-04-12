@@ -27,7 +27,7 @@ var App = React.createClass({
     } else {
       return (
       <div className="section">
-        <ShoppingList listName={this.state.listName} />
+        <ShoppingList listName={this.state.listName} onDeleteList={this._onDeleteList} />
       </div>
       );
     }
@@ -45,7 +45,12 @@ var App = React.createClass({
         });
       }.bind(this),
     });
-  }
+  },
+  _onDeleteList: function() {
+    this.setState({
+      listLoaded: false
+    });
+  },
 });
 
 $(document).ready(function() {
