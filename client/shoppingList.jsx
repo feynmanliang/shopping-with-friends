@@ -56,6 +56,7 @@ module.exports = React.createClass({
       var showList = [];
       _.each(this.state.items, function(item) {
         showList.push(<tr>
+                      <td>{item.transactionStatus}</td>
                       <td>{item.ownerPhone}</td>
                       <td>{item.itemName}</td>
                       <td>
@@ -95,6 +96,7 @@ module.exports = React.createClass({
             <h1>{this.props.listName}</h1>
             <table className="table">
               <tr>
+                <th>Status</th>
                 <th>Phone Number</th>
                 <th>Item Name</th>
                 <th>Price</th>
@@ -114,20 +116,17 @@ module.exports = React.createClass({
   },
   _handlePricefieldChange: function(event) {
     var itemId = event.target.id.slice(12);
-    var newPrice = parseFloat(event.target.value);
-    if (newPrice !== NaN) {
-      this.setState({ items: _.map(
-        this.state.items,
-        function(item) {
-          if (item._id == itemId) {
-            item.price = newPrice;
-            return item;
-          } else {
-            return item;
-          }
-        })
-      });
-    }
+    this.setState({ items: _.map(
+      this.state.items,
+      function(item) {
+        if (item._id == itemId) {
+          item.price = newPrice;
+          return item;
+        } else {
+          return item;
+        }
+      })
+    });
   },
   _handleUpdatePrice: function(event) {
     event.preventDefault();
