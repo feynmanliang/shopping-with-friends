@@ -44,6 +44,21 @@ module.exports = React.createClass({
       });
     }.bind(this));
 
+    // handle venmo receipt
+    socket.on('venmo recv', function(data) {
+      this.setState( { items: _.map(
+        this.state.items,
+        function(item) {
+          if (item.ownerPhone == data.ownerPhone) {
+            item.transactionStatus = newStatus;
+            return item;
+          } else {
+            return item;
+          }
+        })
+      });
+    }.bind(this));
+
     return { items: [] };
   },
   componentDidMount: function() {
@@ -55,7 +70,6 @@ module.exports = React.createClass({
       var showList = [];
       _.each(this.state.items, function(item) {
         showList.push(<tr>
-                      <td>{item.transactionStatus}</td>
                       <td>{item.ownerPhone}</td>
                       <td>{item.itemName}</td>
                       <td>
@@ -85,7 +99,6 @@ module.exports = React.createClass({
           <h1>{this.props.listName}</h1>
           <table className="table">
             <tr>
-              <th>Status</th>
               <th>Phone</th>
               <th>Item</th>
               <th>Price</th>
@@ -160,8 +173,7 @@ module.exports = React.createClass({
         _.each(bill, function(amt, phone) {
           // TODO: This throws a JS bug, but posts successfully??
           $.ajax({
-            url: 'https://api.venmo.com/v1/payments',
-            crossDomain: true,
+            url: '/payments/charge',
             type: 'POST',
             data: {
               access_token: getParameterByName('access_token'),
@@ -170,7 +182,8 @@ module.exports = React.createClass({
               amount: -amt // negative to charge other user
             },
             success: function(res) {
-              console.log("Successfully POSTed venmo charge to " + phone + " for " + amt);
+              console.log("Successfully POSTed venmo charge:");
+              console.log(res);
             },
           });
         }.bind(this));
