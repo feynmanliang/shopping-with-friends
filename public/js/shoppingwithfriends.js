@@ -13,9 +13,37 @@ var ShopForm = React.createClass({
     }.bind(this));
   },
   render: function() {
-    console.log('this.state.name');
-    console.log(this.state.name);
-    console.log(this.state.ListData);
+<<<<<<< HEAD
+=======
+    if (!this.state.name) {
+      return (
+        <div>
+          <div class="section no-pad-bot" id="index-banner">
+            <div class="container">
+              <br /><br />
+              <h1 class="header center orange-text">Going to the store?</h1>
+              <div class="row center">
+                <h5 class="header col s12 light">Maybe your friends want something? You should let them know!</h5>
+              </div>
+              <br /><br />
+            </div>
+          </div>
+          <div class="section">
+            Where are you going?
+            <input type="text" ref="titlefield" placeholder="Store"/>
+
+            Who should we notify?
+            <input type="text" ref="titlefield" placeholder="Friends"/>
+
+            <br />
+
+            <button onClick={this._makeList}>Send SMS!</button>
+          </div>
+          <br /><br />
+        </div>
+      )
+    } else {
+>>>>>>> cb9eb7ef4f7ffb677295437fdf32bacd57a43e00
       var LIST = [];
       if (typeof this.state.ListData.items !== 'undefined') {
         console.log('currData.items');
