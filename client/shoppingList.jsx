@@ -18,7 +18,6 @@ function getParameterByName( name ){
 module.exports = React.createClass({
   propTypes: {
     listName: React.PropTypes.string.isRequired,
-    friendList: React.PropTypes.array.isRequired,
   },
   getInitialState: function() {
     return { items: [] };
@@ -29,9 +28,6 @@ module.exports = React.createClass({
     }.bind(this));
   },
   render: function() {
-    console.log("Rendering shopping list");
-    console.log(this.props.listName);
-    console.log(this.state.items);
     var showList = [];
     _.each(this.state.items, function(item) {
       showList.push(<tr>

@@ -9,6 +9,14 @@ var App = React.createClass({
   getInitialState: function() {
     return { listLoaded: false };
   },
+  componentDidMount: function() {
+    $.getJSON('/shop/lists', function(listNames) {
+      if (listNames.length > 0) this.setState({
+        listLoaded: true,
+        listName: listNames[0]
+      });
+    }.bind(this));
+  },
   render: function() {
     if (!this.state.listLoaded) {
       return (
@@ -19,16 +27,23 @@ var App = React.createClass({
     } else {
       return (
       <div className="section">
-        <ShoppingList listName={this.state.listName} friendList={this.state.friendList} />
+        <ShoppingList listName={this.state.listName} />
       </div>
       );
     }
   },
   _onNewListSubmit: function(listName, friendList) {
-    this.setState({
-      listLoaded: true,
-      listName: listName,
-      friendList: friendList
+    // TODO: Send SMS To everyone in friendList
+    $.ajax({
+      type: 'POST',
+      url: '/shop/lists/create',
+      data: { listName: listName },
+      success: function() {
+        this.setState({
+          listLoaded: true,
+          listName: listName,
+        });
+      }.bind(this),
     });
   }
 });

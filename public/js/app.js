@@ -10,6 +10,14 @@ var App = React.createClass({displayName: "App",
   getInitialState: function() {
     return { listLoaded: false };
   },
+  componentDidMount: function() {
+    $.getJSON('/shop/lists', function(listNames) {
+      if (listNames.length > 0) this.setState({
+        listLoaded: true,
+        listName: listNames[0]
+      });
+    }.bind(this));
+  },
   render: function() {
     if (!this.state.listLoaded) {
       return (
@@ -20,16 +28,23 @@ var App = React.createClass({displayName: "App",
     } else {
       return (
       React.createElement("div", {className: "section"}, 
-        React.createElement(ShoppingList, {listName: this.state.listName, friendList: this.state.friendList})
+        React.createElement(ShoppingList, {listName: this.state.listName})
       )
       );
     }
   },
   _onNewListSubmit: function(listName, friendList) {
-    this.setState({
-      listLoaded: true,
-      listName: listName,
-      friendList: friendList
+    // TODO: Send SMS To everyone in friendList
+    $.ajax({
+      type: 'POST',
+      url: '/shop/lists/create',
+      data: { listName: listName },
+      success: function() {
+        this.setState({
+          listLoaded: true,
+          listName: listName,
+        });
+      }.bind(this),
     });
   }
 });
@@ -113,7 +128,6 @@ function getParameterByName( name ){
 module.exports = React.createClass({displayName: "exports",
   propTypes: {
     listName: React.PropTypes.string.isRequired,
-    friendList: React.PropTypes.array.isRequired,
   },
   getInitialState: function() {
     return { items: [] };
@@ -124,9 +138,6 @@ module.exports = React.createClass({displayName: "exports",
     }.bind(this));
   },
   render: function() {
-    console.log("Rendering shopping list");
-    console.log(this.props.listName);
-    console.log(this.state.items);
     var showList = [];
     _.each(this.state.items, function(item) {
       showList.push(React.createElement("tr", null, 
@@ -144,22 +155,12 @@ module.exports = React.createClass({displayName: "exports",
                     ));
     }.bind(this));
 
-    var authButton;
+    var venmoButton;
     var userInfo;
     if (getParameterByName('access_token') === '') {
-      authButton = React.createElement("button", {className: "btn btn-success", onClick: this._authWithVenmo}, "Authenticate with Venmo");
+      venmoButton = React.createElement("button", {className: "btn btn-success", onClick: this._authWithVenmo}, "Authenticate with Venmo");
     } else {
-      $.ajax({
-        url: 'https://api.venmo.com/v1/me?access_token=' + getParameterByName('access_token'),
-        dataType: 'json',
-        type: 'GET',
-        success: function(res) {
-          console.log(res);
-        }.bind(this),
-        error: function(xhr, status, err) {
-          console.error(this.props.url, status, err.toString());
-        }.bind(this)
-      });
+      venmoButton = React.createElement("button", {className: "btn btn-success", onClick: this._chargeVenmo}, "Split Bill");
     }
     return (
       React.createElement("div", null, 
@@ -176,7 +177,7 @@ module.exports = React.createClass({displayName: "exports",
         )
         ), 
         React.createElement("br", null), 
-        authButton
+        venmoButton
       )
     );
   },
@@ -202,6 +203,26 @@ module.exports = React.createClass({displayName: "exports",
   _authWithVenmo: function(event) {
     event.preventDefault();
     window.location = "https://api.venmo.com/v1/oauth/authorize?client_id=2524&scope=make_payments%20access_profile";
+  },
+  _chargeVenmo: function(event) {
+    event.preventDefault();
+    // TODO: Finish
+    $.ajax({
+      url: '/shop/lists/' + this.props.listName + '/splitBill',
+      dataType: 'json',
+      type: 'GET',
+      success: function(res) {
+        console.log(res);
+      }.bind(this),
+    });
+    $.ajax({
+      url: 'https://api.venmo.com/v1/me?access_token=' + getParameterByName('access_token'),
+      dataType: 'json',
+      type: 'GET',
+      success: function(res) {
+        console.log(res);
+      }.bind(this),
+    });
   },
 });
 
