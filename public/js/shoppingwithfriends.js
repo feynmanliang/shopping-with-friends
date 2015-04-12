@@ -6,7 +6,7 @@ var ShopForm = React.createClass({
     return { };
   },
   componentDidMount: function() {
-    $.getJSON('/shop/lists/bfa', function(list) {
+    $.getJSON('/shop/lists/title', function(list) {
       console.log('list in componentdidmount');
       console.log(list);
       this.setState({ ListData: list });
@@ -17,7 +17,6 @@ var ShopForm = React.createClass({
         <div>
           <div className="section no-pad-bot" id="index-banner">
             <div className="container">
-              <br /><br />
               <h1 className="header center orange-text">Going to the store?</h1>
               <div className="row center">
                 <h5 className="header col s12 light">Maybe your friends want something?</h5>
@@ -27,10 +26,10 @@ var ShopForm = React.createClass({
           </div>
           <div className="section">
             <div className="row">
-                <input type="text" className="input" id="field1" placeholder="Name of Store" />
+                <input type="text" className="input" id="field1" ref="titlefield" placeholder="Name of Store" />
                 <label for="field1">Where are you going?</label>
 
-                <input type="text" className="input" id="field2" placeholder="Friends" />
+                <input type="text" ref="smsfield" className="input" id="field2" placeholder="Friends" />
                 <label for="field2">Who should we notify?</label>
 
                 <input type="hidden" name="count" value="1" />
@@ -55,31 +54,36 @@ var ShopForm = React.createClass({
             </button>
           </div>
           <br /><br />
-        </div>
       );
     }
   },
   _makeList: function(e) {
     e.preventDefault();
+    var smsString = this.refs.smsfield.getDOMNode().value.trim();
+    var smsArray =  smsString.split(' ');
+
     var title = this.refs.titlefield.getDOMNode().value.trim();
     console.log('title in makelist');
     console.log(title);
     this.refs.titlefield.getDOMNode().value = '';
+    this.refs.smsfield.getDOMNode().value = '';
+
+    for (var i = 0; i < smsArray.length; i++) {
     $.ajax({
-      url:'/shop/lists/create',
+      url:'/sms/send',
       dataType: 'json',
       type: 'POST',
-      data: {'listName': title},
+      data: {'to': smsArray[i], 'body': title },
       success: function(data) {
         console.log('data');
         console.log(data);
-
         this.setState( { ListData: data[0] } );
       }.bind(this),
       error: function(xhr, status, err) {
         console.error(this.props.url, status, err.toString());
       }.bind(this)
     });
+    }
   },
   _handleDelete: function(event) {
     event.preventDefault();
