@@ -6,63 +6,55 @@ var ShopForm = React.createClass({
     return { };
   },
   componentDidMount: function() {
-    this.setState( { ListData: {} } );
+    $.getJSON('/shop/lists/bfa', function(list) {
+      console.log('list in componentdidmount');
+      console.log(list);
+      this.setState({ ListData: list });
+    }.bind(this));
   },
   render: function() {
-    $.getJSON('/shop/lists', function(titlesArr) {
-      console.log('titlesarr');
-      console.log(titlesArr);
-      var titlesList = titlesArr;
+      return (
+        <div>
+          <div className="section no-pad-bot" id="index-banner">
+            <div className="container">
+              <br /><br />
+              <h1 className="header center orange-text">Going to the store?</h1>
+              <div className="row center">
+                <h5 className="header col s12 light">Maybe your friends want something?</h5>
+              </div>
+              <br /><br />
+            </div>
+          </div>
+          <div className="section">
+            <div className="row">
+                <input type="text" className="input" id="field1" placeholder="Name of Store" />
+                <label for="field1">Where are you going?</label>
 
-    var TITLE_LIST = [];
-    if (!this.state.name) {
-      console.log('this.state');
-      console.log(this.props.Titles);
-      for (var i = 0; i < titlesList.length; i++) {
-        TITLE_LIST.push(<li><a href="#!">{titlesList[i]}</a></li>);
-        }
-      return (
-        <div>
-          <input type="text" ref="titlefield" placeholder="title.."/>
-          <button onClick={this._makeList}>submit</button>
-          <a className="dropdown-button btn" href="#" data-activates="dropdown1">pick a list to add to</a>
-          <ul id="dropdown1" className="dropdown-content">
-          {TITLE_LIST}
-          </ul>
-        </div>
-      )
-    };
-    });
-    }
-    else {
-      var LIST = [];
-      if (typeof this.state.items !== 'undefined') {
-        console.log('currData.items');
-        console.log(this.state.items);
-        for (var i = 0; i < this.state.items.length; i++) {
-          LIST.push(<tr>
-                    <td>{this.state.items[i].owner}</td>
-                    <td>{this.state.items[i].item}</td>
-                    <td><input type="text" ref="pricefield" placeholder="enter price"/></td>
-                    <td><button onClick={this._handleDelete} id={this.state.items[i]._id}>destroy</button></td>
-                    </tr>);
-        }
-      }
-      return (
-        <div>
-          <input type="text" ref="namefield" placeholder="name.." />
-          <textarea ref="itemfield" rows="5" cols="30" placeholer="enter items separated by commas.." />
-          <button onClick={this._handleSubmit}>submit</button>
-          <table>
-            <thead>
-              <tr>
-                <th id="titleid"><h1>{this.state.name}</h1></th>
-              </tr>
-            </thead>
-            <tbody>
-              {LIST}
-            </tbody>
-          </table>
+                <input type="text" className="input" id="field2" placeholder="Friends" />
+                <label for="field2">Who should we notify?</label>
+
+                <input type="hidden" name="count" value="1" />
+                <div className="control-group" id="fields">
+                    <label className="control-label" for="field1">Nice Multiple Form Fields</label>
+                    <div className="controls" id="profs">
+                        <form className="input-append">
+                            <div id="field">
+                              <input autocomplete="off" className="input" id="field1" name="prof1" type="text" placeholder="Type something" data-items="8"/>
+                              <button id="b1" className="btn add-more" type="button">+</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <br />
+
+            <button className="btn waves-effect waves-light" onClick={this._makeList}>
+            <i className="mdi-content-send right"></i>
+            Let Them Know
+            </button>
+          </div>
+          <br /><br />
         </div>
       );
     }
@@ -105,9 +97,9 @@ var ShopForm = React.createClass({
   },
   _handleSubmit: function(event) {
     event.preventDefault();
-    var title = document.getElementById("titleid").firstChild.innerHTML;
-    console.log('title in handlesubmit');
-    console.log(title);
+//    var title = document.getElementById("titleid").firstChild.innerHTML;
+//    console.log('title in handlesubmit');
+//    console.log(title);
 
     var owner = this.refs.namefield.getDOMNode().value.trim();
     var item = this.refs.itemfield.getDOMNode().value.trim();
@@ -117,7 +109,7 @@ var ShopForm = React.createClass({
     var y = x.getTime();
 
     $.ajax({
-      url:'/shop/lists/'+title+'/additems',
+      url:'/shop/lists/bfa/additems',
       dataType: 'json',
       type: 'POST',
       data: {'listName': title, 'items': [{ _id: y, 'ownerPhone#': owner, 'itemName': item }]},
