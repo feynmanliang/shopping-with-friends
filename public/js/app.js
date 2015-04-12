@@ -14,7 +14,7 @@ var App = React.createClass({displayName: "App",
     if (!this.state.listLoaded) {
       return (
         React.createElement("div", {className: "section"}, 
-          React.createElement(NewListForm, {makeList: this._makeList})
+          React.createElement(NewListForm, {onNewListSubmit: this._onNewListSubmit})
         )
       );
     } else {
@@ -25,9 +25,12 @@ var App = React.createClass({displayName: "App",
       );
     }
   },
-  _makeList: function(newList) {
-    console.log(newList);
-    this.setState( { listLoaded: true, listItems: newList } );
+  _onNewListSubmit: function(listName, friendList) {
+    this.setState({
+      listLoaded: true,
+      listName: listName,
+      friendList: friendList
+    });
   }
 });
 
@@ -46,7 +49,18 @@ var React = require('react');
 
 module.exports = React.createClass({displayName: "exports",
   propTypes: {
-    makeList: React.PropTypes.array.isRequired,
+    onNewListSubmit: React.PropTypes.func.isRequired,
+  },
+  _handleSubmit: function(e) {
+    e.preventDefault();
+    var listName = React.findDOMNode(this.refs.listName).value.trim();
+    var friendList = React.findDOMNode(this.refs.friendList).value.trim();
+    console.log({
+      listLoaded: true,
+      listName: listName,
+      friendList: friendList
+    });
+    this.props.onNewListSubmit(listName, friendList);
   },
   render: function() {
     return (
@@ -62,20 +76,20 @@ module.exports = React.createClass({displayName: "exports",
             )
           ), 
           React.createElement("div", {className: "section"}, 
-            React.createElement("div", {className: "row"}, 
-                React.createElement("input", {type: "text", className: "input", id: "field1", placeholder: "Name of Store"}), 
-                React.createElement("label", {for: "field1"}, "Where are you going?"), 
+              React.createElement("form", {onSubmit: this._handleSubmit}, 
+                React.createElement("input", {type: "text", className: "input", ref: "listName", placeholder: "Name of Store"}), 
+                React.createElement("label", null, "Where are you going?"), 
 
-                React.createElement("input", {type: "text", className: "input", id: "field2", placeholder: "Friends"}), 
-                React.createElement("label", {for: "field2"}, "Who should we notify?")
-            ), 
+                React.createElement("input", {type: "text", className: "input", ref: "friendList", placeholder: "Friends"}), 
+                React.createElement("label", null, "Who should we notify?"), 
 
-            React.createElement("br", null), 
+                React.createElement("br", null), " ", React.createElement("br", null), 
 
-            React.createElement("button", {className: "btn waves-effect waves-light", onClick: this.props.makeList}, 
-            React.createElement("i", {className: "mdi-content-send right"}), 
-            "Let Them Know"
-            )
+                React.createElement("button", {type: "submit", className: "btn waves-effect waves-light"}, 
+                  React.createElement("i", {className: "mdi-content-send right"}), 
+                  "Let Them Know"
+                )
+              )
           )
       )
     );

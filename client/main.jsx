@@ -13,7 +13,7 @@ var App = React.createClass({
     if (!this.state.listLoaded) {
       return (
         <div className="section">
-          <NewListForm makeList={this._makeList}/>
+          <NewListForm onNewListSubmit={this._onNewListSubmit}/>
         </div>
       );
     } else {
@@ -24,9 +24,12 @@ var App = React.createClass({
       );
     }
   },
-  _makeList: function(newList) {
-    console.log(newList);
-    this.setState( { listLoaded: true, listItems: newList } );
+  _onNewListSubmit: function(listName, friendList) {
+    this.setState({
+      listLoaded: true,
+      listName: listName,
+      friendList: friendList
+    });
   }
 });
 
