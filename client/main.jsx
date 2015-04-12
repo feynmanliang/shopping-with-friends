@@ -1,6 +1,7 @@
 /** @jsx React.DOM */
 
 var $ = require('jquery');
+var _ = require('underscore');
 var React = require('react');
 var NewListForm = require('./newList.jsx');
 var ShoppingList = require('./shoppingList.jsx');
@@ -39,6 +40,18 @@ var App = React.createClass({
       url: '/shop/lists/create',
       data: { listName: listName },
       success: function() {
+        // Text each friend
+        _.each(friendList, function(num) {
+          $.ajax({
+            type: 'POST',
+            url: '/sms/send',
+            data: {
+              to: num,
+              body: "Hey! I'm going to be at " + listName + ", want me to pick anything up for you?",
+            }
+          });
+        });
+        // Transition the UI
         this.setState({
           listLoaded: true,
           listName: listName,
