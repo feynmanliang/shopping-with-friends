@@ -1,7 +1,6 @@
 /** @jsx React.DOM */
 
 var React = require('react');
-var Materialize = require('materialize');
 var io = require('../public/bower_components/socket.io-client/socket.io.js');
 var _ = require('underscore');
 
@@ -53,6 +52,9 @@ module.exports = React.createClass({
     }.bind(this));
   },
   render: function() {
+    if (this.state.items.length === 0) {
+      $('#modal1').openModal();
+    }
       var showList = [];
       _.each(this.state.items, function(item) {
         showList.push(<tr>
@@ -78,20 +80,19 @@ module.exports = React.createClass({
         venmoButton = <button className="btn btn-success" onClick={this._chargeVenmo}>Split Bill</button>;
       }
       return (
-        <div>
-          <a className="btn" onclick="Materialize.toast('I am a toast', 4000)">Toast!</a>
-
-          <a className="modal-trigger waves-effect waves-light btn" href="#modal1">Modal</a>
-          <div id="modal1" className="modal modal-fixed-footer">
-            <div className="modal-content">
-              <h4>Success</h4>
-              <p>You successfullly texted your friends!</p>
+          <div>
+            <a className="modal-trigger waves-effect waves-light btn" style={{display:"None"}} href="#modal1">Modal</a>
+            <div id="modal1" className="modal modal-fixed-footer">
+              <div className="modal-content teal lighten-2">
+                <h4 font-size="100px;" >Success!</h4>
+                <div className="div_hover">
+                  <p>You texted your friends. Now to wait for a response....</p>
+                </div>
+              </div>
+              <div className="modal-footer">
+                <a href="#!" className="modal-action modal-close waves-effect waves-green btn-flat "/>
+              </div>
             </div>
-            <div className="modal-footer">
-              <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat ">Agree</a>
-            </div>
-          </div>
-          <div id='chargesuccess'>
             <h1>{this.props.listName}</h1>
             <table className="table">
               <tr>
@@ -101,15 +102,14 @@ module.exports = React.createClass({
                 <th></th>
                 <th>Delete</th>
               </tr>
-            <tbody>
-              {showList}
-            </tbody>
+              <tbody>
+                {showList}
+              </tbody>
             </table>
             <br />
             {venmoButton}
             <button className="btn" onClick={this._deleteList}>Delete List</button>
           </div>
-        </div>
       );
   },
   _handlePricefieldChange: function(event) {
