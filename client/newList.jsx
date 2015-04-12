@@ -1,7 +1,6 @@
 /** @jsx React.DOM */
 
 var React = require('react');
-var Materialize = require('../public/bower_components/materialize/dist/js/materialize.min.js');
 
 module.exports = React.createClass({
   propTypes: {
@@ -35,9 +34,8 @@ module.exports = React.createClass({
                 <label>Who should we notify?</label>
 
                 <br /> <br />
-                Materialize.toast('message', 4000)
 
-                <button type="submit" onClick="Materialize.toast('message', 4000)" className="btn waves-effect waves-light" >
+                <button type="submit" onClick={Materialize.toast('message', 4000)} className="btn waves-effect waves-light" >
                   <i className="mdi-content-send right"></i>
                   Let Them Know
                 </button>

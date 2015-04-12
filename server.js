@@ -12,6 +12,7 @@ server.setup(function(runningApp, http) {
 
   runningApp.use('/sms', require('sms')(io)); // attach to sub-route
   runningApp.use('/shop', require('shop')); // attach to sub-route
+  runningApp.use('/payments', require('payments')(io)); // attach to sub-route
   runningApp.use(require('routes')); // attach to root route
 
 });

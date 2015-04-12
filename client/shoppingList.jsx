@@ -1,7 +1,7 @@
 /** @jsx React.DOM */
 
 var React = require('react');
-var Materialize = require('../public/bower_components/materialize/dist/js/materialize.min.js');
+var Materialize = require('materialize');
 var io = require('../public/bower_components/socket.io-client/socket.io.js');
 var _ = require('underscore');
 
