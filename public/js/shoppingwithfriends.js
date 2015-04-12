@@ -6,7 +6,11 @@ var ShopForm = React.createClass({
     return { };
   },
   componentDidMount: function() {
-    this.setState( { } );
+    $.getJSON('/shop/lists/bfa', function(list) {
+      console.log('list in componentdidmount');
+      console.log(list);
+      this.setState({ ListData: list });
+    }.bind(this));
   },
   render: function() {
       return (
@@ -53,36 +57,7 @@ var ShopForm = React.createClass({
           <br /><br />
         </div>
       );
-      //var LIST = [];
-      //if (typeof this.state.items !== 'undefined') {
-        //console.log('currData.items');
-        //console.log(this.state.items);
-        //for (var i = 0; i < this.state.items.length; i++) {
-          //LIST.push(<tr>
-                    //<td>{this.state.items[i].owner}</td>
-                    //<td>{this.state.items[i].item}</td>
-                    //<td><input type="text" ref="pricefield" placeholder="enter price"/></td>
-                    //<td><button onClick={this._handleDelete} id={this.state.items[i]._id}>destroy</button></td>
-                    //</tr>);
-        //}
-      //}
-      //return (
-        //<div>
-          //<input type="text" ref="namefield" placeholder="name.." />
-          //<textarea ref="itemfield" rows="5" cols="30" placeholer="enter items separated by commas.." />
-          //<button onClick={this._handleSubmit}>submit</button>
-          //<table>
-            //<thead>
-              //<tr>
-                //<th id="titleid"><h1>{this.state.name}</h1></th>
-              //</tr>
-            //</thead>
-            //<tbody>
-              //{LIST}
-            //</tbody>
-          //</table>
-        //</div>
-      //);
+    }
   },
   _makeList: function(e) {
     e.preventDefault();
@@ -122,9 +97,9 @@ var ShopForm = React.createClass({
   },
   _handleSubmit: function(event) {
     event.preventDefault();
-    var title = document.getElementById("titleid").firstChild.innerHTML;
-    console.log('title in handlesubmit');
-    console.log(title);
+//    var title = document.getElementById("titleid").firstChild.innerHTML;
+//    console.log('title in handlesubmit');
+//    console.log(title);
 
     var owner = this.refs.namefield.getDOMNode().value.trim();
     var item = this.refs.itemfield.getDOMNode().value.trim();
@@ -134,7 +109,7 @@ var ShopForm = React.createClass({
     var y = x.getTime();
 
     $.ajax({
-      url:'/shop/lists/'+title+'/additems',
+      url:'/shop/lists/bfa/additems',
       dataType: 'json',
       type: 'POST',
       data: {'listName': title, 'items': [{ _id: y, 'ownerPhone#': owner, 'itemName': item }]},
