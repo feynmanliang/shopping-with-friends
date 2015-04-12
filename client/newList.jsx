@@ -4,7 +4,13 @@ var React = require('react');
 
 module.exports = React.createClass({
   propTypes: {
-    makeList: React.PropTypes.array.isRequired,
+    onNewListSubmit: React.PropTypes.func.isRequired,
+  },
+  _handleSubmit: function(e) {
+    e.preventDefault();
+    var listName = React.findDOMNode(this.refs.listName).value.trim();
+    var friendList = React.findDOMNode(this.refs.friendList).value.trim().split(" ");
+    this.props.onNewListSubmit(listName, friendList);
   },
   render: function() {
     return (
@@ -20,20 +26,20 @@ module.exports = React.createClass({
             </div>
           </div>
           <div className="section">
-            <div className="row">
-                <input type="text" className="input" id="field1" placeholder="Name of Store" />
-                <label for="field1">Where are you going?</label>
+              <form onSubmit={this._handleSubmit}>
+                <input type="text" className="input" ref="listName" placeholder="Name of Store" />
+                <label>Where are you going?</label>
 
-                <input type="text" className="input" id="field2" placeholder="Friends" />
-                <label for="field2">Who should we notify?</label>
-            </div>
+                <input type="text" className="input" ref="friendList" placeholder="Friends" />
+                <label>Who should we notify?</label>
 
-            <br />
+                <br /> <br />
 
-            <button className="btn waves-effect waves-light" onClick={this.props.makeList}>
-            <i className="mdi-content-send right"></i>
-            Let Them Know
-            </button>
+                <button type="submit" className="btn waves-effect waves-light">
+                  <i className="mdi-content-send right"></i>
+                  Let Them Know
+                </button>
+              </form>
           </div>
       </div>
     );
