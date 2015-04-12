@@ -35,7 +35,7 @@ module.exports = React.createClass({
 
                 <br /> <br />
 
-                <button type="submit" onClick={Materialize.toast('message', 4000)} className="btn waves-effect waves-light" >
+                <button type="submit" onClick={function() { Materialize.toast('Friends Notified!', 4000); } } className="btn waves-effect waves-light" >
                   <i className="mdi-content-send right"></i>
                   Let Them Know
                 </button>
