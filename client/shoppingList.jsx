@@ -34,7 +34,7 @@ module.exports = React.createClass({
                     <td>{item.ownerPhone}</td>
                     <td>{item.itemName}</td>
                     <td>
-                    <input type="text" ref="pricefield" />
+                    <input type="text" id={"priceForItem" + item._id} defaultValue={item.price} />
                     </td>
                     <td>
                     <button onClick={this._handleUpdatePrice} id={item._id} className="btn btn-success btn-xs">
@@ -54,7 +54,7 @@ module.exports = React.createClass({
     }
     return (
       <div>
-        <h1>this.props.listName</h1>
+        <h1>{this.props.listName}</h1>
         <table className="table">
           <tr>
             <th>Phone Number</th>
@@ -73,16 +73,27 @@ module.exports = React.createClass({
     );
   },
   _handleUpdatePrice: function(event) {
-    // TODO
-    e.preventDefault();
+    event.preventDefault();
+    var itemId = $(event.target).attr('id');
+    var newPrice = $("#priceForItem" + itemId)[0].value.trim();
+    $.ajax({
+      type: 'POST',
+      url: '/shop/lists/' + this.props.listName + '/updatePrice',
+      data: {
+        _id: itemId,
+        newPrice: newPrice
+      },
+      success: function() {
+        // TODO: flash the UI to confirm success
+      }.bind(this)
+    });
   },
   _handleDelete: function(event) {
     event.preventDefault();
     var itemID = $(event.target).attr('id');
-    var listName = this.props.listName;
     $.ajax({
       type: 'DELETE',
-      url: '/shop/lists/' + listName + '/' + itemID,
+      url: '/shop/lists/' + this.props.listName + '/' + itemID,
       success: function(data) {
         this.setState({ items: data.items });
       }.bind(this),

@@ -144,7 +144,7 @@ module.exports = React.createClass({displayName: "exports",
                     React.createElement("td", null, item.ownerPhone), 
                     React.createElement("td", null, item.itemName), 
                     React.createElement("td", null, 
-                    React.createElement("input", {type: "text", ref: "pricefield"})
+                    React.createElement("input", {type: "text", id: "priceForItem" + item._id, defaultValue: item.price})
                     ), 
                     React.createElement("td", null, 
                     React.createElement("button", {onClick: this._handleUpdatePrice, id: item._id, className: "btn btn-success btn-xs"}, 
@@ -164,7 +164,7 @@ module.exports = React.createClass({displayName: "exports",
     }
     return (
       React.createElement("div", null, 
-        React.createElement("h1", null, "this.props.listName"), 
+        React.createElement("h1", null, this.props.listName), 
         React.createElement("table", {className: "table"}, 
           React.createElement("tr", null, 
             React.createElement("th", null, "Phone Number"), 
@@ -183,16 +183,27 @@ module.exports = React.createClass({displayName: "exports",
     );
   },
   _handleUpdatePrice: function(event) {
-    // TODO
-    e.preventDefault();
+    event.preventDefault();
+    var itemId = $(event.target).attr('id');
+    var newPrice = $("#priceForItem" + itemId)[0].value.trim();
+    $.ajax({
+      type: 'POST',
+      url: '/shop/lists/' + this.props.listName + '/updatePrice',
+      data: {
+        _id: itemId,
+        newPrice: newPrice
+      },
+      success: function() {
+        // TODO: flash the UI to confirm success
+      }.bind(this)
+    });
   },
   _handleDelete: function(event) {
     event.preventDefault();
     var itemID = $(event.target).attr('id');
-    var listName = this.props.listName;
     $.ajax({
       type: 'DELETE',
-      url: '/shop/lists/' + listName + '/' + itemID,
+      url: '/shop/lists/' + this.props.listName + '/' + itemID,
       success: function(data) {
         this.setState({ items: data.items });
       }.bind(this),
