@@ -1,6 +1,7 @@
 /** @jsx React.DOM */
 
 var React = require('react');
+var Materialize = require('../public/bower_components/materialize/dist/js/materialize.min.js');
 var io = require('../public/bower_components/socket.io-client/socket.io.js');
 var _ = require('underscore');
 
@@ -38,6 +39,7 @@ module.exports = React.createClass({
           }]
         },
         success: function(data) {
+
           this.setState( { items: data.items } );
         }.bind(this),
       });
@@ -51,50 +53,64 @@ module.exports = React.createClass({
     }.bind(this));
   },
   render: function() {
-    var showList = [];
-    _.each(this.state.items, function(item) {
-      showList.push(<tr>
-                    <td>{item.ownerPhone}</td>
-                    <td>{item.itemName}</td>
-                    <td>
-                    <input type="text" id={"priceForItem" + item._id} value={item.price} onChange={this._handlePricefieldChange} />
-                    </td>
-                    <td>
-                    <button onClick={this._handleUpdatePrice} id={item._id} className="btn btn-success btn-xs">
-                    $
-                    </button>
-                    </td>
-                    <td><button onClick={this._handleDelete} id={item._id} className="btn btn-danger btn-xs">destroy</button></td>
-                    </tr>);
-    }.bind(this));
+      var showList = [];
+      _.each(this.state.items, function(item) {
+        showList.push(<tr>
+                      <td>{item.ownerPhone}</td>
+                      <td>{item.itemName}</td>
+                      <td>
+                      <input type="text" id={"priceForItem" + item._id} value={item.price} onChange={this._handlePricefieldChange} />
+                      </td>
+                      <td>
+                      <button onClick={this._handleUpdatePrice} id={item._id} className="btn btn-success btn-xs">
+                      $
+                      </button>
+                      </td>
+                      <td><button onClick={this._handleDelete} id={item._id} className="btn btn-danger btn-xs">destroy</button></td>
+                      </tr>);
+      }.bind(this));
 
-    var venmoButton;
-    var userInfo;
-    if (getParameterByName('access_token') === '') {
-      venmoButton = <button className="btn btn-success" onClick={this._authWithVenmo}>Authenticate with Venmo</button>;
-    } else {
-      venmoButton = <button className="btn btn-success" onClick={this._chargeVenmo}>Split Bill</button>;
-    }
-    return (
-      <div>
-        <h1>{this.props.listName}</h1>
-        <table className="table">
-          <tr>
-            <th>Phone Number</th>
-            <th>Item Name</th>
-            <th>Price</th>
-            <th></th>
-            <th>Delete</th>
-          </tr>
-        <tbody>
-          {showList}
-        </tbody>
-        </table>
-        <br />
-        {venmoButton}
-        <button className="btn" onClick={this._deleteList}>Delete List</button>
-      </div>
-    );
+      var venmoButton;
+      var userInfo;
+      if (getParameterByName('access_token') === '') {
+        venmoButton = <button className="btn btn-success" onClick={this._authWithVenmo}>Authenticate with Venmo</button>;
+      } else {
+        venmoButton = <button className="btn btn-success" onClick={this._chargeVenmo}>Split Bill</button>;
+      }
+      return (
+        <div>
+          <a className="btn" onclick="Materialize.toast('I am a toast', 4000)">Toast!</a>
+
+          <a className="modal-trigger waves-effect waves-light btn" href="#modal1">Modal</a>
+          <div id="modal1" className="modal modal-fixed-footer">
+            <div className="modal-content">
+              <h4>Success</h4>
+              <p>You successfullly texted your friends!</p>
+            </div>
+            <div className="modal-footer">
+              <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat ">Agree</a>
+            </div>
+          </div>
+          <div id='chargesuccess'>
+            <h1>{this.props.listName}</h1>
+            <table className="table">
+              <tr>
+                <th>Phone Number</th>
+                <th>Item Name</th>
+                <th>Price</th>
+                <th></th>
+                <th>Delete</th>
+              </tr>
+            <tbody>
+              {showList}
+            </tbody>
+            </table>
+            <br />
+            {venmoButton}
+            <button className="btn" onClick={this._deleteList}>Delete List</button>
+          </div>
+        </div>
+      );
   },
   _handlePricefieldChange: function(event) {
     var itemId = event.target.id.slice(12);
@@ -151,6 +167,7 @@ module.exports = React.createClass({
       dataType: 'json',
       type: 'GET',
       success: function(bill) {
+
         _.each(bill, function(amt, phone) {
           // TODO: This throws a JS bug, but posts successfully??
           $.ajax({
