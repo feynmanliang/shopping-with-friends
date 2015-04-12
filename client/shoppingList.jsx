@@ -44,6 +44,21 @@ module.exports = React.createClass({
       });
     }.bind(this));
 
+    // handle venmo receipt
+    socket.on('venmo recv', function(data) {
+      this.setState( { items: _.map(
+        this.state.items,
+        function(item) {
+          if (item.ownerPhone == data.ownerPhone) {
+            item.transactionStatus = newStatus;
+            return item;
+          } else {
+            return item;
+          }
+        })
+      });
+    }.bind(this));
+
     return { items: [] };
   },
   componentDidMount: function() {
@@ -64,20 +79,23 @@ module.exports = React.createClass({
                       <input type="text" id={"priceForItem" + item._id} value={item.price} onChange={this._handlePricefieldChange} />
                       </td>
                       <td>
-                      <button onClick={this._handleUpdatePrice} id={item._id} className="btn btn-success btn-xs">
+                      <button onClick={this._handleUpdatePrice} id={item._id} className="btn waves-effect waves-light green">
                       $
                       </button>
                       </td>
-                      <td><button onClick={this._handleDelete} id={item._id} className="btn btn-danger btn-xs">destroy</button></td>
+                      <td><button onClick={this._handleDelete} id={item._id} className="btn waves-effect waves-light red">destroy</button></td>
                       </tr>);
       }.bind(this));
 
       var venmoButton;
       var userInfo;
       if (getParameterByName('access_token') === '') {
-        venmoButton = <button className="btn btn-success" onClick={this._authWithVenmo}>Authenticate with Venmo</button>;
+        venmoButton = <button className="btn waves-effect waves-light left" onClick={this._authWithVenmo}>Authenticate with Venmo</button>;
       } else {
-        venmoButton = <button className="btn btn-success" onClick={this._chargeVenmo}>Split Bill</button>;
+        venmoButton = (<button className="btn waves-effect waves-light left" onClick={this._chargeVenmo}>
+                       Split Bill
+                       <i class="mdi-content-send right"></i>
+                       </button>);
       }
       return (
           <div>
@@ -107,27 +125,26 @@ module.exports = React.createClass({
               </tbody>
             </table>
             <br />
+          <div className="section">
             {venmoButton}
-            <button className="btn" onClick={this._deleteList}>Delete List</button>
+            <button className="btn waves-effect waves-light red right" onClick={this._deleteList}>Delete List</button>
+            <br /><br />
           </div>
       );
   },
   _handlePricefieldChange: function(event) {
     var itemId = event.target.id.slice(12);
-    var newPrice = parseFloat(event.target.value);
-    if (newPrice !== NaN) {
-      this.setState({ items: _.map(
-        this.state.items,
-        function(item) {
-          if (item._id == itemId) {
-            item.price = newPrice;
-            return item;
-          } else {
-            return item;
-          }
-        })
-      });
-    }
+    this.setState({ items: _.map(
+      this.state.items,
+      function(item) {
+        if (item._id == itemId) {
+          item.price = newPrice;
+          return item;
+        } else {
+          return item;
+        }
+      })
+    });
   },
   _handleUpdatePrice: function(event) {
     event.preventDefault();
@@ -171,8 +188,7 @@ module.exports = React.createClass({
         _.each(bill, function(amt, phone) {
           // TODO: This throws a JS bug, but posts successfully??
           $.ajax({
-            url: 'https://api.venmo.com/v1/payments',
-            crossDomain: true,
+            url: '/payments/charge',
             type: 'POST',
             data: {
               access_token: getParameterByName('access_token'),
@@ -181,7 +197,8 @@ module.exports = React.createClass({
               amount: -amt // negative to charge other user
             },
             success: function(res) {
-              console.log("Successfully POSTed venmo charge to " + phone + " for " + amt);
+              console.log("Successfully POSTed venmo charge:");
+              console.log(res);
             },
           });
         }.bind(this));
