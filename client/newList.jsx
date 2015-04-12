@@ -9,12 +9,7 @@ module.exports = React.createClass({
   _handleSubmit: function(e) {
     e.preventDefault();
     var listName = React.findDOMNode(this.refs.listName).value.trim();
-    var friendList = React.findDOMNode(this.refs.friendList).value.trim();
-    console.log({
-      listLoaded: true,
-      listName: listName,
-      friendList: friendList
-    });
+    var friendList = React.findDOMNode(this.refs.friendList).value.trim().split(" ");
     this.props.onNewListSubmit(listName, friendList);
   },
   render: function() {

@@ -1,48 +1,63 @@
 /** @jsx React.DOM */
 
 var React = require('react');
+var _ = require('underscore');
 
 module.exports = React.createClass({
   propTypes: {
-    itemsList: React.PropTypes.array.isRequired,
+    listName: React.PropTypes.string.isRequired,
+    friendList: React.PropTypes.array.isRequired,
   },
   getInitialState: function() {
-    return {};
+    return { items: [] };
   },
   componentDidMount: function() {
-    $.getJSON('/shop/lists/bfa', function(list) {
-      console.log('list in componentdidmount');
-      console.log(list);
-      this.setState({ ListData: list });
+    $.getJSON('/shop/lists/' + this.props.listName, function(list) {
+      this.setState({ items: list.items });
     }.bind(this));
   },
   render: function() {
-      return (
-        <div>
-        </div>
-      );
-  },
-  _makeList: function(e) {
-    e.preventDefault();
-    var title = this.refs.titlefield.getDOMNode().value.trim();
-    console.log('title in makelist');
-    console.log(title);
-    this.refs.titlefield.getDOMNode().value = '';
-    $.ajax({
-      url:'/shop/lists/create',
-      dataType: 'json',
-      type: 'POST',
-      data: {'listName': title},
-      success: function(data) {
-        console.log('data');
-        console.log(data);
-
-        this.setState( { ListData: data[0] } );
-      }.bind(this),
-      error: function(xhr, status, err) {
-        console.error(this.props.url, status, err.toString());
-      }.bind(this)
+    console.log("Rendering shopping list");
+    console.log(this.props.listName);
+    console.log(this.state.items);
+    var showList = [];
+    _.each(this.state.items, function(item) {
+      showList.push(<tr>
+                    <td>{item.ownerPhone}</td>
+                    <td>{item.itemName}</td>
+                    <td><input type="text" ref="pricefield"/></td>
+                    <td><button onClick={this._submitPrice} id={item._id} className="btn btn-success btn-xs">$</button></td>
+                    <td><button onClick={this._handleDelete} id={item._id} className="btn btn-danger btn-xs">destroy</button></td>
+                    </tr>);
     });
+
+    //var authButton;
+    //var userInfo;
+    //if (getParameterByName('access_token') === '') {
+    //  authButton = <button className="btn btn-success" onClick={this._authUser}>authUser</button>;
+    //} else {
+    //  $.ajax({
+    //    url: 'https://api.venmo.com/v1/me?access_token=' + getParameterByName('access_token'),
+    //    dataType: 'json',
+    //    type: 'GET',
+    //    success: function(res) {
+    //      console.log(res);
+    //    }.bind(this),
+    //    error: function(xhr, status, err) {
+    //      console.error(this.props.url, status, err.toString());
+    //    }.bind(this)
+    //  });
+    //}
+    return (
+      <div>
+        <button className="btn btn-warning" onClick={this._sendSms}>sms</button>
+        <table className="table">
+          <tbody>
+            {showList}
+          </tbody>
+        </table>
+      </div>
+    );
   },
   _handleDelete: function(event) {
     event.preventDefault();

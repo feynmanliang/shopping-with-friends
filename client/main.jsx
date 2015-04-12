@@ -19,7 +19,7 @@ var App = React.createClass({
     } else {
       return (
       <div className="section">
-        <ShoppingList itemsList={this.state.listItems} />
+        <ShoppingList listName={this.state.listName} friendList={this.state.friendList} />
       </div>
       );
     }
