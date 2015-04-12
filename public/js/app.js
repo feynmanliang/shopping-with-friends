@@ -98,6 +98,18 @@ module.exports = React.createClass({displayName: "exports",
 var React = require('react');
 var _ = require('underscore');
 
+// For extracting from query string (venmo auth)
+function getParameterByName( name ){
+  name = name.replace(/[\[]/,"\\\[").replace(/[\]]/,"\\\]");
+  var regexS = "[\\?&]"+name+"=([^&#]*)";
+  var regex = new RegExp( regexS );
+  var results = regex.exec( window.location.href );
+  if( results == null )
+    return "";
+  else
+    return decodeURIComponent(results[1].replace(/\+/g, " "));
+}
+
 module.exports = React.createClass({displayName: "exports",
   propTypes: {
     listName: React.PropTypes.string.isRequired,
@@ -121,34 +133,34 @@ module.exports = React.createClass({displayName: "exports",
                     React.createElement("td", null, item.ownerPhone), 
                     React.createElement("td", null, item.itemName), 
                     React.createElement("td", null, 
-                      React.createElement("input", {type: "text", ref: "pricefield"})
+                    React.createElement("input", {type: "text", ref: "pricefield"})
                     ), 
                     React.createElement("td", null, 
-                      React.createElement("button", {onClick: this._submitPrice, id: item._id, className: "btn btn-success btn-xs"}, 
-                        "$"
-                      )
+                    React.createElement("button", {onClick: this._handleUpdatePrice, id: item._id, className: "btn btn-success btn-xs"}, 
+                    "$"
+                    )
                     ), 
                     React.createElement("td", null, React.createElement("button", {onClick: this._handleDelete, id: item._id, className: "btn btn-danger btn-xs"}, "destroy"))
                     ));
     }.bind(this));
 
-    //var authButton;
-    //var userInfo;
-    //if (getParameterByName('access_token') === '') {
-    //  authButton = <button className="btn btn-success" onClick={this._authUser}>authUser</button>;
-    //} else {
-    //  $.ajax({
-    //    url: 'https://api.venmo.com/v1/me?access_token=' + getParameterByName('access_token'),
-    //    dataType: 'json',
-    //    type: 'GET',
-    //    success: function(res) {
-    //      console.log(res);
-    //    }.bind(this),
-    //    error: function(xhr, status, err) {
-    //      console.error(this.props.url, status, err.toString());
-    //    }.bind(this)
-    //  });
-    //}
+    var authButton;
+    var userInfo;
+    if (getParameterByName('access_token') === '') {
+      authButton = React.createElement("button", {className: "btn btn-success", onClick: this._authWithVenmo}, "Authenticate with Venmo");
+    } else {
+      $.ajax({
+        url: 'https://api.venmo.com/v1/me?access_token=' + getParameterByName('access_token'),
+        dataType: 'json',
+        type: 'GET',
+        success: function(res) {
+          console.log(res);
+        }.bind(this),
+        error: function(xhr, status, err) {
+          console.error(this.props.url, status, err.toString());
+        }.bind(this)
+      });
+    }
     return (
       React.createElement("div", null, 
         React.createElement("table", {className: "table"}, 
@@ -159,12 +171,18 @@ module.exports = React.createClass({displayName: "exports",
             React.createElement("th", null), 
             React.createElement("th", null, "Delete")
           ), 
-          React.createElement("tbody", null, 
-            showList
-          )
+        React.createElement("tbody", null, 
+          showList
         )
+        ), 
+        React.createElement("br", null), 
+        authButton
       )
     );
+  },
+  _handleUpdatePrice: function(event) {
+    // TODO
+    e.preventDefault();
   },
   _handleDelete: function(event) {
     event.preventDefault();
@@ -181,29 +199,10 @@ module.exports = React.createClass({displayName: "exports",
       }.bind(this)
     });
   },
-  _handleSubmit: function(event) {
+  _authWithVenmo: function(event) {
     event.preventDefault();
-    var owner = this.refs.namefield.getDOMNode().value.trim();
-    var item = this.refs.itemfield.getDOMNode().value.trim();
-    this.refs.namefield.getDOMNode.value = '';
-    this.refs.itemfield.getDOMNode.value = '';
-    var x = new Date();
-    var y = x.getTime();
-
-    $.ajax({
-      url:'/shop/lists/bfa/additems',
-      dataType: 'json',
-      type: 'POST',
-      data: {'listName': title, 'items': [{ _id: y, 'ownerPhone#': owner, 'itemName': item }]},
-      success: function(data) {
-        console.log('handle submit SUCESS');
-        this.setState({ ListData: data });
-      }.bind(this),
-      error: function(xhr, status, err) {
-        console.error(this.props.url, status, err.toString());
-      }.bind(this)
-    });
-  }
+    window.location = "https://api.venmo.com/v1/oauth/authorize?client_id=2524&scope=make_payments%20access_profile";
+  },
 });
 
 
