@@ -1,6 +1,7 @@
 /** @jsx React.DOM */
 
 var React = require('react');
+var io = require('../public/bower_components/socket.io-client/socket.io.js');
 var _ = require('underscore');
 
 // For extracting from query string (venmo auth)
@@ -18,13 +19,35 @@ function getParameterByName( name ){
 module.exports = React.createClass({
   propTypes: {
     listName: React.PropTypes.string.isRequired,
+    onDeleteList: React.PropTypes.func.isRequired,
   },
   getInitialState: function() {
+    // Handle socket emits (resulting from twilio SMS)
+    socket.on('sms recv', function(data) {
+      var x = new Date();
+      var _id = x.getTime();
+      $.ajax({
+        url: '/shop/lists/' + this.props.listName + '/addItems',
+        type: 'POST',
+        data: {
+          items: [{
+            _id: _id,
+            ownerPhone: data.from,
+            itemName: data.items,
+            price: ''
+          }]
+        },
+        success: function(data) {
+          this.setState( { items: data.items } );
+        }.bind(this),
+      });
+    }.bind(this));
+
     return { items: [] };
   },
   componentDidMount: function() {
-    $.getJSON('/shop/lists/' + this.props.listName, function(list) {
-      this.setState({ items: list.items });
+    $.getJSON('/shop/lists/' + this.props.listName, function(data) {
+      this.setState({ items: data.items });
     }.bind(this));
   },
   render: function() {
@@ -34,7 +57,7 @@ module.exports = React.createClass({
                     <td>{item.ownerPhone}</td>
                     <td>{item.itemName}</td>
                     <td>
-                    <input type="text" id={"priceForItem" + item._id} defaultValue={item.price} />
+                    <input type="text" id={"priceForItem" + item._id} value={item.price} onChange={this._handlePricefieldChange} />
                     </td>
                     <td>
                     <button onClick={this._handleUpdatePrice} id={item._id} className="btn btn-success btn-xs">
@@ -69,8 +92,26 @@ module.exports = React.createClass({
         </table>
         <br />
         {venmoButton}
+        <button className="btn" onClick={this._deleteList}>Delete List</button>
       </div>
     );
+  },
+  _handlePricefieldChange: function(event) {
+    var itemId = event.target.id.slice(12);
+    var newPrice = parseFloat(event.target.value);
+    if (newPrice !== NaN) {
+      this.setState({ items: _.map(
+        this.state.items,
+        function(item) {
+          if (item._id == itemId) {
+            item.price = newPrice;
+            return item;
+          } else {
+            return item;
+          }
+        })
+      });
+    }
   },
   _handleUpdatePrice: function(event) {
     event.preventDefault();
@@ -96,9 +137,6 @@ module.exports = React.createClass({
       url: '/shop/lists/' + this.props.listName + '/' + itemID,
       success: function(data) {
         this.setState({ items: data.items });
-      }.bind(this),
-      error: function(xhr, status, err) {
-        console.error(this.props.url, status. err.toString());
       }.bind(this)
     });
   },
@@ -124,6 +162,15 @@ module.exports = React.createClass({
       success: function(res) {
         console.log(res);
       }.bind(this),
+    });
+  },
+  _deleteList: function(event) {
+    $.ajax({
+      type: 'DELETE',
+      url: '/shop/lists/' + this.props.listName,
+      success: function(data) {
+        this.props.onDeleteList();
+      }.bind(this)
     });
   },
 });
