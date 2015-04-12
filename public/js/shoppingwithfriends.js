@@ -6,35 +6,17 @@ var ShopForm = React.createClass({
     return { };
   },
   componentDidMount: function() {
-    this.setState( { ListData: {} } );
+    this.setState( { } );
   },
   render: function() {
-    $.getJSON('/shop/lists', function(titlesArr) {
-      console.log('titlesarr');
-      console.log(titlesArr);
-      var titlesList = titlesArr;
-
-    var TITLE_LIST = [];
     if (!this.state.name) {
-      console.log('this.state');
-      console.log(this.props.Titles);
-      for (var i = 0; i < titlesList.length; i++) {
-        TITLE_LIST.push(<li><a href="#!">{titlesList[i]}</a></li>);
-        }
       return (
         <div>
           <input type="text" ref="titlefield" placeholder="title.."/>
           <button onClick={this._makeList}>submit</button>
-          <a className="dropdown-button btn" href="#" data-activates="dropdown1">pick a list to add to</a>
-          <ul id="dropdown1" className="dropdown-content">
-          {TITLE_LIST}
-          </ul>
         </div>
       )
-    };
-    });
-    }
-    else {
+    } else {
       var LIST = [];
       if (typeof this.state.items !== 'undefined') {
         console.log('currData.items');
