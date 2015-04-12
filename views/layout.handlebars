@@ -1,35 +1,65 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no"/>
   <title>{{siteTitle}}</title>
 
   <link href="/bower_components/materialize/dist/css/materialize.min.css" media="all" rel="stylesheet" />
   <link href="/css/app.css" media="all" rel="stylesheet" />
 
+</head>
+
+<body lang="en">
+
+  <nav class="light-blue lighten-1" role="navigation">
+    <div class="nav-wrapper container"><a id="logo-container" href="#" class="brand-logo">Shopping With Friends</a>
+      <ul class="right hide-on-med-and-down">
+        <li><a href="#">Navbar Link</a></li>
+      </ul>
+
+      <ul id="nav-mobile" class="side-nav">
+        <li><a href="#">Navbar Link</a></li>
+      </ul>
+      <a href="#" data-activates="nav-mobile" class="button-collapse"><i class="mdi-navigation-menu"></i></a>
+    </div>
+  </nav>
+
+  <div id="canvas" class="container">
+    {{{body}}}
+  </div>
+
+
+  <footer class="page-footer orange">
+    <!--<div class="container">-->
+      <!--<div class="row">-->
+        <!--<div class="col l6 s12">-->
+          <!--<h5 class="white-text">Company Bio</h5>-->
+          <!--<p class="grey-text text-lighten-4">We are a team of college students working on this project like it's our full time job. Any amount would help support and continue development on this project and is greatly appreciated.</p>-->
+        <!--</div>-->
+      <!--</div>-->
+    <!--</div>-->
+
+    <div class="footer-copyright">
+      <div class="container">
+        With love from <a href="http://feynmanliang.com/">Feynman Liang</a>, Niole Nelson, and Michael Musty.
+      </div>
+    </div>
+  </footer>
+
+
+
+  <!-- Scripts -->
   <script src="/js/ios-orientationchange-fix.js"></script>
   <script src="/bower_components/jquery/dist/jquery.min.js"></script>
+  <script src="/bower_components/materialize/dist/js/materialize.min.js"></script>
   <script src="/bower_components/react/JSXTransformer.js"></script>
   <script src="/bower_components/react/react.min.js"></script>
-  <script src="/bower_components/materialize/dist/js/materialize.min.js"></script>
   <!--<script src="/bower_components/socket.io-client/socket.io.js"></script>-->
   <script src="/socket.io/socket.io.js"></script>
   <script>
     var socket = io();
   </script>
-</head>
 
-<body lang="en">
-
-<!--  <header id="layout-marker">
-    Layout Loaded
-  </header> -->
-
-  <div id="canvas" class="container">
-        {{{body}}}
-  </div>
-
-</body>
-
+  </body>
 </html>

@@ -12,8 +12,28 @@ var ShopForm = React.createClass({
     if (!this.state.name) {
       return (
         <div>
-          <input type="text" ref="titlefield" placeholder="title.."/>
-          <button onClick={this._makeList}>submit</button>
+          <div class="section no-pad-bot" id="index-banner">
+            <div class="container">
+              <br /><br />
+              <h1 class="header center orange-text">Going to the store?</h1>
+              <div class="row center">
+                <h5 class="header col s12 light">Maybe your friends want something? You should let them know!</h5>
+              </div>
+              <br /><br />
+            </div>
+          </div>
+          <div class="section">
+            Where are you going?
+            <input type="text" ref="titlefield" placeholder="Store"/>
+
+            Who should we notify?
+            <input type="text" ref="titlefield" placeholder="Friends"/>
+
+            <br />
+
+            <button onClick={this._makeList}>Send SMS!</button>
+          </div>
+          <br /><br />
         </div>
       )
     } else {
