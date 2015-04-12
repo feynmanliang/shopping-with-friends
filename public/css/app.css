@@ -8,3 +8,17 @@ body {
   background-color: #ffb5c0;
   padding: .3em 0.7em;
 }
+
+h4 {
+  font-size: 70px;
+  font-family: Calibri;
+}
+
+p {
+  font-size: 30px;
+  font-family: Calibri;
+}
+
+.modal {
+    background-color:#fce4ec;
+ }
