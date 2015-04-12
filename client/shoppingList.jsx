@@ -57,7 +57,7 @@ module.exports = React.createClass({
                     <td>{item.ownerPhone}</td>
                     <td>{item.itemName}</td>
                     <td>
-                    <input type="text" id={"priceForItem" + item._id} defaultValue={item.price} />
+                    <input type="text" id={"priceForItem" + item._id} value={item.price} onChange={this._handlePricefieldChange} />
                     </td>
                     <td>
                     <button onClick={this._handleUpdatePrice} id={item._id} className="btn btn-success btn-xs">
@@ -95,6 +95,23 @@ module.exports = React.createClass({
         <button className="btn" onClick={this._deleteList}>Delete List</button>
       </div>
     );
+  },
+  _handlePricefieldChange: function(event) {
+    var itemId = event.target.id.slice(12);
+    var newPrice = parseFloat(event.target.value);
+    if (newPrice !== NaN) {
+      this.setState({ items: _.map(
+        this.state.items,
+        function(item) {
+          if (item._id == itemId) {
+            item.price = newPrice;
+            return item;
+          } else {
+            return item;
+          }
+        })
+      });
+    }
   },
   _handleUpdatePrice: function(event) {
     event.preventDefault();

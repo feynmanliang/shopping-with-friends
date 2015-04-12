@@ -172,7 +172,7 @@ module.exports = React.createClass({displayName: "exports",
                     React.createElement("td", null, item.ownerPhone), 
                     React.createElement("td", null, item.itemName), 
                     React.createElement("td", null, 
-                    React.createElement("input", {type: "text", id: "priceForItem" + item._id, defaultValue: item.price})
+                    React.createElement("input", {type: "text", id: "priceForItem" + item._id, value: item.price, onChange: this._handlePricefieldChange})
                     ), 
                     React.createElement("td", null, 
                     React.createElement("button", {onClick: this._handleUpdatePrice, id: item._id, className: "btn btn-success btn-xs"}, 
@@ -210,6 +210,23 @@ module.exports = React.createClass({displayName: "exports",
         React.createElement("button", {className: "btn", onClick: this._deleteList}, "Delete List")
       )
     );
+  },
+  _handlePricefieldChange: function(event) {
+    var itemId = event.target.id.slice(12);
+    var newPrice = parseFloat(event.target.value);
+    if (newPrice !== NaN) {
+      this.setState({ items: _.map(
+        this.state.items,
+        function(item) {
+          if (item._id == itemId) {
+            item.price = newPrice;
+            return item;
+          } else {
+            return item;
+          }
+        })
+      });
+    }
   },
   _handleUpdatePrice: function(event) {
     event.preventDefault();
