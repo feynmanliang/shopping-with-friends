@@ -6,11 +6,20 @@ var ShopForm = React.createClass({
     return { };
   },
   componentDidMount: function() {
-    $.getJSON('/shop/lists/title', function(list) {
-      console.log('list in componentdidmount');
-      console.log(list);
-      this.setState({ ListData: list });
-    }.bind(this));
+    $.ajax({
+      url:'/sms/receive',
+      dataType: 'json',
+      type: 'POST',
+      data: true,
+      success: function(data) {
+        console.log('data');
+        console.log(data);
+        this.setState( { ListData: data } );
+      }.bind(this),
+      error: function(xhr, status, err) {
+        console.error(this.props.url, status, err.toString());
+      }.bind(this)
+    });
   },
   render: function() {
       return (
