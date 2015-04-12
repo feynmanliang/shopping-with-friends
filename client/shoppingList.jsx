@@ -54,6 +54,7 @@ module.exports = React.createClass({
     }
     return (
       <div>
+        <h1>this.props.listName</h1>
         <table className="table">
           <tr>
             <th>Phone Number</th>
@@ -92,7 +93,7 @@ module.exports = React.createClass({
   },
   _authWithVenmo: function(event) {
     event.preventDefault();
-    window.location = "https://api.venmo.com/v1/oauth/authorize?client_id=2524&scope=make_payments%20access_profile";
+    window.location = "https://api.venmo.com/v1/oauth/authorize?client_id=2536&scope=make_payments";
   },
   _chargeVenmo: function(event) {
     event.preventDefault();

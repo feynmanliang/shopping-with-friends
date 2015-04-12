@@ -164,6 +164,7 @@ module.exports = React.createClass({displayName: "exports",
     }
     return (
       React.createElement("div", null, 
+        React.createElement("h1", null, "this.props.listName"), 
         React.createElement("table", {className: "table"}, 
           React.createElement("tr", null, 
             React.createElement("th", null, "Phone Number"), 
@@ -202,7 +203,7 @@ module.exports = React.createClass({displayName: "exports",
   },
   _authWithVenmo: function(event) {
     event.preventDefault();
-    window.location = "https://api.venmo.com/v1/oauth/authorize?client_id=2524&scope=make_payments%20access_profile";
+    window.location = "https://api.venmo.com/v1/oauth/authorize?client_id=2536&scope=make_payments";
   },
   _chargeVenmo: function(event) {
     event.preventDefault();
