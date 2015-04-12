@@ -146,21 +146,28 @@ module.exports = React.createClass({
   },
   _chargeVenmo: function(event) {
     event.preventDefault();
-    // TODO: Finish
     $.ajax({
       url: '/shop/lists/' + this.props.listName + '/splitBill',
       dataType: 'json',
       type: 'GET',
-      success: function(res) {
-        console.log(res);
-      }.bind(this),
-    });
-    $.ajax({
-      url: 'https://api.venmo.com/v1/me?access_token=' + getParameterByName('access_token'),
-      dataType: 'json',
-      type: 'GET',
-      success: function(res) {
-        console.log(res);
+      success: function(bill) {
+        _.each(bill, function(amt, phone) {
+          // TODO: This throws a JS bug, but posts successfully??
+          $.ajax({
+            url: 'https://api.venmo.com/v1/payments',
+            crossDomain: true,
+            type: 'POST',
+            data: {
+              access_token: getParameterByName('access_token'),
+              phone: phone,
+              note: 'Splitting bill from ' + this.props.listName,
+              amount: -amt // negative to charge other user
+            },
+            success: function(res) {
+              console.log("Successfully POSTed venmo charge to " + phone + " for " + amt);
+            },
+          });
+        }.bind(this));
       }.bind(this),
     });
   },
